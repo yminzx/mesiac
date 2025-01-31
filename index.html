@@ -23,11 +23,15 @@
             width: 100%;
             height: 100vh;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
 
         /* Particules de poussière */
         .dust-particle {
-            position: absolute;
+            position: fixed;
             width: 1px;
             height: 1px;
             border-radius: 50%;
@@ -55,11 +59,13 @@
         /* Butterfly */
         .butterfly {
             position: absolute;
-            top: 50%;
-            left: 50%;
+            top: 40%;
+            left: 60%;
             transform: translate(-50%, -50%);
             cursor: pointer;
             filter: drop-shadow(0 0 8px rgba(255,255,255,0.3));
+            width: min(600px, max(384px, 35vw));
+            height: min(600px, max(384px, 35vw));
         }
 
         @keyframes float {
@@ -71,12 +77,17 @@
         /* Message and checkboxes */
         .message-container {
             position: absolute;
-            bottom: 4rem;
-            left: 0;
-            right: 0;
+            bottom: 20%;
+            left: 60%;
+            transform: translateX(-50%);
             text-align: center;
             opacity: 0;
             transition: opacity 1s;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
 
         .message {
@@ -87,6 +98,13 @@
                          0 0 20px rgba(255,255,255,0.3),
                          0 0 30px rgba(255,255,255,0.2);
             white-space: nowrap;
+            width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
         }
 
         .emoji {
@@ -195,12 +213,17 @@
                 container.appendChild(particle);
             }
 
-            // Buttefly
+            // Container & Checkbox
+            const contentWrapper = document.createElement('div');
+            contentWrapper.className = 'content-wrapper';
+            container.appendChild(contentWrapper);
+
+            // Butterfly
             const butterfly = document.createElement('div');
             butterfly.className = 'butterfly';
             butterfly.style.animation = 'float 3s ease-in-out infinite';
             butterfly.innerHTML = `
-                <svg viewBox="0 0 100 100" style="width: 384px; height: 384px;">
+                <svg viewBox="0 0 100 100" style="width: 100%; height: 100%;">
                     <path d="M48 40 L52 40 L52 60 L48 60 Z" fill="white"/>
                     <path d="M48 40 Q45 30 42 25 M52 40 Q55 30 58 25" stroke="white" stroke-width="1" fill="none"/>
                     <path d="M48 40 C20 20, 10 30, 20 45 C10 60, 20 65, 48 50" fill="white" opacity="0.9"/>
@@ -209,17 +232,15 @@
                     <path d="M52 50 C80 45, 90 55, 80 65 C90 75, 70 75, 52 60" fill="white" opacity="0.8"/>
                 </svg>
             `;
-            container.appendChild(butterfly);
+            contentWrapper.appendChild(butterfly);
 
             // Container & Checkbox
             const messageContainer = document.createElement('div');
             messageContainer.className = 'message-container';
             messageContainer.innerHTML = `
                 <div class="message">
-                    <span>✧ Zuzana do you want to be my valentine? </span>
-                    <div style="display: inline-block; vertical-align: middle;">
-                        <img src="./MochiCatShy.gif" alt="sparkle" class="emoji">
-                    </div>
+                    ✧ Zuzana do you want to be my valentine?
+                    <img src="./MochiCatShy.gif" alt="sparkle" class="emoji">
                 </div>
                 <div class="checkbox-container">
                     <div class="checkbox-group">
