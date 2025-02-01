@@ -496,7 +496,6 @@ function startHeartGeneration() {
 const secondQuestion = document.querySelector('.second-question');
 
 asMuchBtn.addEventListener('click', () => {
-    // Supprime le bouton et affiche le message + les compteurs
     secondQuestion.innerHTML = `
         <div class="message">
             ✧ I love you Zu ✧
@@ -511,13 +510,11 @@ asMuchBtn.addEventListener('click', () => {
         </div>
     `;
 
-    // Ajoute la classe d'animation après un court délai pour un effet fluide
     setTimeout(() => {
         document.querySelector('.countdown-container').style.opacity = '1';
         document.querySelector('.countdown-container').style.transform = 'translateY(0)';
     }, 100);
 
-    // Calcul du nombre de jours restants jusqu'à la Saint-Valentin 2025
     function updateCountdowns() {
         const today = new Date();
         const valentineDate = new Date('2025-02-14');
@@ -529,11 +526,21 @@ asMuchBtn.addEventListener('click', () => {
         document.getElementById('valentine-countdown').textContent = timeUntilValentine;
         document.getElementById('since-date-countdown').textContent = timeSinceDate >= 0 ? timeSinceDate : '0';
     }
-
-    // Mise à jour immédiate et rafraîchissement quotidien
     updateCountdowns();
     setInterval(updateCountdowns, 1000 * 60 * 60 * 24);
-});
+    });
+        updateCountdowns();
+    setInterval(updateCountdowns, 1000 * 60 * 60 * 24);
+
+    window.onload = function () {
+    let lastVisit = localStorage.getItem("lastVisit");
+    let currentVersion = "2"; 
+
+    if (lastVisit !== currentVersion) {
+        localStorage.setItem("lastVisit", currentVersion);
+        location.reload(true); 
+    }
+};
 
 });
     </script>
