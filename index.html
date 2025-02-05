@@ -48,7 +48,7 @@
             padding: 1rem;
         }
 
-        /* Calendrier */
+        /* Calender */
         .calendar {
             background-color: white;
             color: black;
@@ -178,7 +178,7 @@
             font-weight: bold;
         }
 
-        /* Barre de recherche */
+        /* Search */
         .search-container {
             grid-column: span 2;
             display: flex;
@@ -199,7 +199,7 @@
             box-shadow: 0 1px 1px rgba(255, 255, 255, 0.1);
         }
 
-        /* Navigation du bas */
+        /* Navbar */
         .bottom-nav {
             position: fixed;
             bottom: 15px;
@@ -252,17 +252,89 @@
                 grid-template-columns: repeat(4, 1fr);
             }
         }
+                /* Carousel */
+        .carousel-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .carousel-slides {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .carousel-slide {
+            min-width: 100%;
+            height: 100%;
+        }
+
+        .carousel-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .carousel-nav {
+            position: absolute;
+            bottom: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 0.5rem;
+            z-index: 2;
+        }
+
+        .carousel-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+        }
+
+        .carousel-dot.active {
+            background: white;
+        }
+
+        .carousel-button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            z-index: 2;
+        }
+
+        .carousel-prev {
+            left: 1rem;
+        }
+
+        .carousel-next {
+            right: 1rem;
+        }
     </style>
 </head>
 <body>
-    <!-- Header avec heure et coeur -->
+    <!-- Header -->
     <div class="header">
         <div class="time">14:15</div>
         <div class="heart">♡✧</div>
     </div>
 
     <div class="dashboard">
-        <!-- Calendrier -->
+        <!-- Calander -->
         <div class="widget calendar">
             <div class="month"></div>
             <div class="grid"></div>
@@ -289,10 +361,29 @@
             </div>
         </div>
 
-        <!-- iScreen -->
-        <a href="#your-link-1" class="widget iscreen">
-            <img src="img\index\1screen.PNG" alt="Landscape" />
-        </a>
+        <!-- iScreen Carousel -->
+        <div class="widget iscreen">
+            <div class="carousel-container">
+                <div class="carousel-slides">
+                    <a href="#link-1" class="carousel-slide">
+                        <img src="img/index/3screen.PNG" alt="Slide 1" />
+                    </a>
+                    <a href="#link-2" class="carousel-slide">
+                        <img src="img/index/1screen.PNG" alt="Slide 2" />
+                    </a>
+                    <a href="#link-3" class="carousel-slide">
+                        <img src="img/index/4screen.PNG" alt="Slide 3" />
+                    </a>
+                </div>
+                <button class="carousel-button carousel-prev">
+                    <span class="material-icons">chevron_left</span>
+                </button>
+                <button class="carousel-button carousel-next">
+                    <span class="material-icons">chevron_right</span>
+                </button>
+                <div class="carousel-nav"></div>
+            </div>
+        </div>
 
         <!-- iScreen simple -->
         <a href="#your-link-2" class="widget iscreen single">
@@ -319,7 +410,7 @@
         </div>
     </div>
 
-    <!-- Navigation du bas -->
+    <!-- Navbar -->
     <div class="bottom-nav">
         <div class="nav-icons">
             <a href="https://mesiac.eu/hviezda" class="nav-icon">
@@ -386,7 +477,7 @@
                 calendarGrid.appendChild(emptyDay);
             }
 
-            // Ajouter les jours du mois
+            // Days add
             for (let i = 1; i <= lastDay.getDate(); i++) {
                 const day = document.createElement('div');
                 if (i === currentDate) {
@@ -400,6 +491,80 @@
         // Init
         getCurrentMonthCalendar();
         updateDayCount();
+
+        
+        // Script  carousel
+        class Carousel {
+            constructor(element) {
+                this.container = element;
+                this.slides = element.querySelector('.carousel-slides');
+                this.slideElements = this.slides.querySelectorAll('.carousel-slide');
+                this.currentIndex = 0;
+                this.totalSlides = this.slideElements.length;
+
+                // Point nav
+                this.navContainer = element.querySelector('.carousel-nav');
+                this.createNavDots();
+
+                // Nav Button
+                this.prevButton = element.querySelector('.carousel-prev');
+                this.nextButton = element.querySelector('.carousel-next');
+
+                this.initListeners();
+                this.updateSlidePosition();
+            }
+
+            createNavDots() {
+                for (let i = 0; i < this.totalSlides; i++) {
+                    const dot = document.createElement('div');
+                    dot.classList.add('carousel-dot');
+                    if (i === 0) dot.classList.add('active');
+                    dot.addEventListener('click', () => this.goToSlide(i));
+                    this.navContainer.appendChild(dot);
+                }
+            }
+
+            initListeners() {
+                this.prevButton.addEventListener('click', () => this.previousSlide());
+                this.nextButton.addEventListener('click', () => this.nextSlide());
+
+                // Auto-play
+                setInterval(() => this.nextSlide(), 5000);
+            }
+
+            updateSlidePosition() {
+                this.slides.style.transform = `translateX(-${this.currentIndex * 100}%)`;
+                
+                // Point nav
+                const dots = this.navContainer.querySelectorAll('.carousel-dot');
+                dots.forEach((dot, index) => {
+                    dot.classList.toggle('active', index === this.currentIndex);
+                });
+            }
+
+            previousSlide() {
+                this.currentIndex = (this.currentIndex - 1 + this.totalSlides) % this.totalSlides;
+                this.updateSlidePosition();
+            }
+
+            nextSlide() {
+                this.currentIndex = (this.currentIndex + 1) % this.totalSlides;
+                this.updateSlidePosition();
+            }
+
+            goToSlide(index) {
+                this.currentIndex = index;
+                this.updateSlidePosition();
+            }
+        }
+
+        // Init carousel
+        document.addEventListener('DOMContentLoaded', () => {
+            const carouselElement = document.querySelector('.carousel-container');
+            if (carouselElement) {
+                new Carousel(carouselElement);
+            }
+        });
     </script>
 </body>
 </html>
