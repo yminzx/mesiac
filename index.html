@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mesiac</title>
+    <title>Dashboard</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -12,263 +13,393 @@
         }
 
         body {
-            background-color: black;
-            overflow: hidden;
-            height: 100vh;
-            font-family: serif;
+            background-image: url('../../img/index/background.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: white;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            min-height: 100vh;
+            padding-bottom: 120px;
         }
 
-        .container {
-            position: relative;
-            width: 100%;
-            height: 100vh;
-            overflow: hidden;
+        .header {
             display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            justify-content: space-between;
+            padding: 0.5rem 1rem;
+            font-size: 1.2rem;
         }
 
-        /* Particules de poussière */
-        .dust-particle {
-            position: fixed;
-            width: 1px;
-            height: 1px;
+        .dashboard {
+            padding: 0.8rem;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.8rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            height: calc(100vh - 160px);
+        }
+
+        .widget {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            border-radius: 24px;
+            padding: 1rem;
+        }
+
+        /* Calendrier */
+        .calendar {
+            background-color: white;
+            color: black;
+            height: auto;
+            padding: 1.2rem;
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
+        }
+
+        .calendar .month {
+            color: #666;
+            font-size: 1.5rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .calendar .grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 0.3rem;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        .calendar .today {
+            background-color: #007AFF;
+            color: white;
             border-radius: 50%;
-            background: radial-gradient(circle at center, rgba(255,255,255,0.8), rgba(255,255,255,0.2));
-            opacity: 0;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: auto;
         }
 
-        @keyframes rise {
-            0% {
-                transform: translateY(100vh);
-                opacity: 0;
-            }
-            20% {
-                opacity: 1;
-            }
-            80% {
-                opacity: 0.8;
-            }
-            100% {
-                transform: translateY(-20vh);
-                opacity: 0;
-            }
+        /* Batteries */
+        .batteries {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            justify-items: center;
         }
 
-        /* Butterfly */
-        .butterfly {
+        .battery-indicator {
+            position: relative;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .battery-indicator .material-icons {
+            font-size: 24px;
+            z-index: 2;
+            color: white;
+        }
+
+        .battery-level {
             position: absolute;
-            top: 40%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            cursor: pointer;
-            filter: drop-shadow(0 0 8px rgba(255,255,255,0.3));
-            width: min(600px, max(384px, 35vw));
-            height: min(600px, max(384px, 35vw));
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 4px solid;
+            border-color: transparent;
         }
 
-        @keyframes float {
-            0%, 100% { transform: translate(-50%, -50%) translateY(0) rotate(0deg); }
-            25% { transform: translate(-50%, -50%) translateY(-10px) rotate(2deg); }
-            75% { transform: translate(-50%, -50%) translateY(10px) rotate(-2deg); }
+        .battery-level.pink {
+            border-color: #FF69B4;
         }
 
-        /* Message and checkboxes */
-        .message-container {
+        .battery-level.pink-partial {
+            border-color: #FF69B4;
+            border-left-color: transparent;
+            transform: rotate(-45deg);
+        }
+
+        /* iScreen */
+        .iscreen {
+            grid-column: span 2;
+            overflow: hidden;
+            position: relative;
+            height: 200px;
+            padding: 0;
+        }
+
+        .iscreen.single {
+            grid-column: span 1;
+        }
+
+        .iscreen img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .widget-title {
             position: absolute;
-            bottom: 20%;
+            bottom: 1rem;
+            left: 1rem;
+            color: white;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+
+        /* TheDayBefore */
+        .day-before {
+            background-color: white;
+            color: black;
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
+        }
+
+        .day-before .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            background: none;
+            padding: 0;
+        }
+
+        .day-before .count {
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+
+        /* Barre de recherche */
+        .search-container {
+            grid-column: span 2;
+            display: flex;
+            justify-content: center;
+            margin-top: 1.5rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .search {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border-radius: 9999px;
+            padding: 0.75rem 2rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 1px 1px rgba(255, 255, 255, 0.1);
+        }
+
+        /* Navigation du bas */
+        .bottom-nav {
+            position: fixed;
+            bottom: 15px;
             left: 50%;
             transform: translateX(-50%);
-            text-align: center;
-            opacity: 0;
-            transition: opacity 1s;
-            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            padding: 0.8rem 1.5rem;
+            border-radius: 20px;
+            width: 80%;
+            box-shadow: 0 1px 1px rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-icons {
             display: flex;
-            flex-direction: column;
+            justify-content: space-around;
+            gap: 0.8rem;
+        }
+
+        .nav-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
             align-items: center;
             justify-content: center;
-        }
-
-        .message {
-            color: #f5f5f0;
-            font-size: clamp(1.2rem, 4vw, 2rem);
-            margin-bottom: 2rem;
-            text-shadow: 0 0 10px rgba(255,255,255,0.5),
-                         0 0 20px rgba(255,255,255,0.3),
-                         0 0 30px rgba(255,255,255,0.2);
-            white-space: nowrap;
-            width: fit-content;
-            margin-left: auto;
-            margin-right: auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 5px;
-        }
-
-        .emoji {
-            width: 32px;
-            height: 32px;
-            vertical-align: middle;
-            margin: 0 2px;
-            display: inline-block;
-            transform: translateY(-4px);
-        }
-
-        .checkbox-container {
-            display: flex;
-            justify-content: center;
-            gap: 4rem;
-        }
-
-        .checkbox-group {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .checkbox-label {
-            color: #f5f5f0;
-            font-size: 1.5rem;
-            text-shadow: 0 0 10px rgba(255,255,255,0.5);
-        }
-
-        .custom-checkbox {
-            appearance: none;
-            width: 40px;
-            height: 40px;
-            background: transparent;
-            cursor: pointer;
-            position: relative;
-            transition: all 0.4s ease;
-        }
-
-        .custom-checkbox::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 32px;
-            height: 32px;
-            border: 2px solid rgba(255,255,255,0.7);
-            border-radius: 50%;
+            text-decoration: none;
+            color: white;
             transition: all 0.3s ease;
         }
 
-        .custom-checkbox:hover::before {
-            border-color: rgba(255,255,255,1);
-            box-shadow: 0 0 15px rgba(255,255,255,0.4);
+        .nav-icon:hover {
+            background: rgba(255, 255, 255, 0.2);
         }
 
-        .custom-checkbox:checked::before {
-            background: rgba(255,255,255,0.1);
-            border-width: 3px;
+        .nav-icon .material-icons {
+            font-size: 32px;
         }
 
-        .custom-checkbox:checked::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 16px;
-            height: 16px;
-            background: rgba(255,255,255,0.9);
-            border-radius: 50%;
-            box-shadow: 0 0 10px rgba(255,255,255,0.6);
-            animation: checkbox-glow 1s ease-out;
+        @media (min-width: 768px) {
+            .dashboard {
+                grid-template-columns: repeat(3, 1fr);
+            }
         }
 
-        @keyframes checkbox-glow {
-            0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
-            50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.8; }
-            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-        }
-
-        .show {
-            opacity: 1;
+        @media (min-width: 1024px) {
+            .dashboard {
+                grid-template-columns: repeat(4, 1fr);
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- JavaScript -->
+    <!-- Header avec heure et coeur -->
+    <div class="header">
+        <div class="time">14:15</div>
+        <div class="heart">♡✧</div>
+    </div>
+
+    <div class="dashboard">
+        <!-- Calendrier -->
+        <div class="widget calendar">
+            <div class="month"></div>
+            <div class="grid"></div>
+        </div>
+
+        <!-- Batteries -->
+        <div class="widget">
+            <div class="batteries">
+                <div class="battery-indicator">
+                    <span style="font-family: serif; font-size: 28px; font-weight: bold;">M</span>
+                    <div class="battery-level pink"></div>
+                </div>
+                <div class="battery-indicator">
+                    <span style="font-family: serif; font-size: 28px; font-weight: bold;">Z</span>
+                    <div class="battery-level pink"></div>
+                </div>
+                <div class="battery-indicator">
+                    <span style="font-family: serif; font-size: 24px; font-weight: bold;">MJ</span>
+                    <div class="battery-level pink-partial"></div>
+                </div>
+                <div class="battery-indicator">
+                    <span class="material-icons">public</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- iScreen -->
+        <a href="#your-link-1" class="widget iscreen">
+            <img src="img\index\1screen.PNG" alt="Landscape" />
+        </a>
+
+        <!-- iScreen simple -->
+        <a href="#your-link-2" class="widget iscreen single">
+            <img src="img\index\2screen.PNG" alt="Moon" />
+        </a>
+
+        <!-- TheDayBefore -->
+        <div class="widget day-before">
+            <div class="header">
+                <div>
+                    <h3>Min Zu 💞</h3>
+                    <p style="color: #666">Nov 19, 2024 (Thu)</p>
+                </div>
+                <div class="count" id="dayCount"></div>
+            </div>
+        </div>
+
+        <!-- Search -->
+        <div class="search-container">
+            <div class="search">
+                <span class="material-icons">search</span>
+                Search
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation du bas -->
+    <div class="bottom-nav">
+        <div class="nav-icons">
+            <a href="https://mesiac.eu/hviezda" class="nav-icon">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 3L8 9L4 7L7 12L4 17L8 15L12 21L16 15L20 17L17 12L20 7L16 9L12 3ZM12 7L14 10.5L16 9.5L14.5 12L16 14.5L14 13.5L12 17L10 13.5L8 14.5L9.5 12L8 9.5L10 10.5L12 7Z"/>
+                </svg>
+            </a>
+            <a href="#" class="nav-icon">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM15.9 8.1C15.5 7.7 14.8 7.7 14.4 8.1L12 10.5L9.6 8.1C9.2 7.7 8.5 7.7 8.1 8.1C7.7 8.5 7.7 9.2 8.1 9.6L10.5 12L8.1 14.4C7.7 14.8 7.7 15.5 8.1 15.9C8.5 16.3 9.2 16.3 9.6 15.9L12 13.5L14.4 15.9C14.8 16.3 15.5 16.3 15.9 15.9C16.3 15.5 16.3 14.8 15.9 14.4L13.5 12L15.9 9.6C16.3 9.2 16.3 8.5 15.9 8.1ZM12 22C6.5 22 2 17.5 2 12C2 6.5 6.5 2 12 2C17.5 2 22 6.5 22 12C22 17.5 17.5 22 12 22Z"/>
+                </svg>
+            </a>
+            <a href="#" class="nav-icon">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 3C7.03 3 3 7.03 3 12C3 16.97 7.03 21 12 21C16.97 21 21 16.97 21 12C21 11.54 20.96 11.08 20.9 10.64C19.92 12.01 18.32 13 16.5 13C13.74 13 11.5 10.76 11.5 8C11.5 5.24 13.74 3 16.5 3C17.37 3 18.19 3.19 18.93 3.54C17.01 3.19 14.63 3 12 3Z"/>
+                </svg>
+            </a>
+        </div>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const container = document.querySelector('.container');
+        // Time
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('fr-FR', { 
+                hour: '2-digit', 
+                minute: '2-digit' 
+            });
+            document.querySelector('.time').textContent = timeString;
+        }
 
-            // Dust
-            for (let i = 0; i < 150; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'dust-particle';
-                particle.style.left = `${Math.random() * 100}%`;
-                particle.style.width = `${Math.random() * 3 + 1}px`;
-                particle.style.height = particle.style.width;
-                particle.style.animation = `rise ${5 + Math.random() * 3}s ease-out infinite ${Math.random() * 4}s`;
-                container.appendChild(particle);
+        // Time sec
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        //  19 Nov 2024
+        function updateDayCount() {
+            const startDate = new Date('2024-11-19');
+            const today = new Date();
+            const diffTime = Math.abs(today - startDate);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            document.getElementById('dayCount').textContent = diffDays;
+        }
+
+        // Calendar
+        function getCurrentMonthCalendar() {
+            const now = new Date();
+            const currentMonth = now.getMonth();
+            const currentDate = now.getDate();
+            const firstDay = new Date(now.getFullYear(), currentMonth, 1);
+            const lastDay = new Date(now.getFullYear(), currentMonth + 1, 0);
+            
+            const monthNames = ["January", "February", "March", "April", "May", "June",
+                              "July", "August", "September", "October", "November", "December"];
+
+            document.querySelector('.calendar .month').textContent = monthNames[currentMonth];
+            
+            const calendarGrid = document.querySelector('.calendar .grid');
+            calendarGrid.innerHTML = '';
+
+            // Days
+            for (let i = 0; i < firstDay.getDay(); i++) {
+                const emptyDay = document.createElement('div');
+                calendarGrid.appendChild(emptyDay);
             }
 
-            // Container & Checkbox
-            const contentWrapper = document.createElement('div');
-            contentWrapper.className = 'content-wrapper';
-            container.appendChild(contentWrapper);
+            // Ajouter les jours du mois
+            for (let i = 1; i <= lastDay.getDate(); i++) {
+                const day = document.createElement('div');
+                if (i === currentDate) {
+                    day.classList.add('today');
+                }
+                day.textContent = i;
+                calendarGrid.appendChild(day);
+            }
+        }
 
-            // Butterfly
-            const butterfly = document.createElement('div');
-            butterfly.className = 'butterfly';
-            butterfly.style.animation = 'float 3s ease-in-out infinite';
-            butterfly.innerHTML = `
-                <svg viewBox="0 0 100 100" style="width: 100%; height: 100%;">
-                    <path d="M48 40 L52 40 L52 60 L48 60 Z" fill="white"/>
-                    <path d="M48 40 Q45 30 42 25 M52 40 Q55 30 58 25" stroke="white" stroke-width="1" fill="none"/>
-                    <path d="M48 40 C20 20, 10 30, 20 45 C10 60, 20 65, 48 50" fill="white" opacity="0.9"/>
-                    <path d="M52 40 C80 20, 90 30, 80 45 C90 60, 80 65, 52 50" fill="white" opacity="0.9"/>
-                    <path d="M48 50 C20 45, 10 55, 20 65 C10 75, 30 75, 48 60" fill="white" opacity="0.8"/>
-                    <path d="M52 50 C80 45, 90 55, 80 65 C90 75, 70 75, 52 60" fill="white" opacity="0.8"/>
-                </svg>
-            `;
-            contentWrapper.appendChild(butterfly);
-
-            // Container & Checkbox
-            const messageContainer = document.createElement('div');
-            messageContainer.className = 'message-container';
-            messageContainer.innerHTML = `
-                <div class="message">
-                    ✧ Zuzana do you want to be my valentine?
-                    <img src="./MochiCatShy.gif" alt="sparkle" class="emoji">
-                </div>
-                <div class="checkbox-container">
-                    <div class="checkbox-group">
-                        <span class="checkbox-label">Yes</span>
-                        <input type="checkbox" class="custom-checkbox" name="choice" value="yes">
-                    </div>
-                    <div class="checkbox-group">
-                        <span class="checkbox-label">No</span>
-                        <input type="checkbox" class="custom-checkbox" name="choice" value="no">
-                    </div>
-                </div>
-            `;
-            container.appendChild(messageContainer);
-
-            // Event
-            butterfly.addEventListener('click', () => {
-                messageContainer.classList.add('show');
-            });
-
-            const checkboxes = document.querySelectorAll('.custom-checkbox');
-            checkboxes.forEach(checkbox => {
-                checkbox.addEventListener('change', (e) => {
-                    checkboxes.forEach(cb => {
-                        if (cb !== e.target) cb.checked = false;
-                    });
-                });
-            });
-        });
+        // Init
+        getCurrentMonthCalendar();
+        updateDayCount();
     </script>
 </body>
 </html>
