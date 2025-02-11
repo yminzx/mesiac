@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌑- Mesiac </title>
+   <style>
+       .loader-fade {
+           position: fixed;
+           top: 0;
+           left: 0;
+           width: 100%;
+           height: 100%;
+           background-color: black;
+           z-index: 9999;
+           transition: opacity 0.8s ease-out;
+       }
+
+       .loader-fade.fade-out {
+           opacity: 0;
+       }
+
+       * {
+           margin: 0;
+           padding: 0;
+           box-sizing: border-box;
+       }
+
+       body {
+           background-color: #0e0e0e;
+           overflow: hidden;
+           height: 100vh;
+           display: flex;
+           justify-content: center;
+           align-items: center;
+       }
+
+       .loader-container {
+           position: relative;
+           width: 100px;
+           height: 100px;
+           opacity: 1;
+           transition: opacity 0.8s ease-out;
+       }
+
+       .loader-container.fade-out {
+           opacity: 0;
+       }
+
+       .butterfly {
+           position: absolute;
+           width: 100%;
+           height: 100%;
+           filter: drop-shadow(0 0 8px rgba(255,255,255,0.3));
+           animation: combined-animation 3s infinite;
+           cursor: pointer; /* Ajout du curseur pointer pour indiquer que c'est cliquable */
+       }
+
+       /* Style pour le lien qui entoure le papillon */
+       .butterfly-link {
+           display: block;
+           width: 100%;
+           height: 100%;
+           position: relative;
+       }
+
+       @keyframes combined-animation {
+           0% {
+               transform: translateY(0) rotate(0deg) scale(1);
+               filter: drop-shadow(0 0 8px rgba(255,255,255,0.3));
+           }
+           25% {
+               transform: translateY(-10px) rotate(5deg) scale(1.1);
+               filter: drop-shadow(0 0 12px rgba(255,255,255,0.5));
+           }
+           50% {
+               transform: translateY(0) rotate(0deg) scale(1);
+               filter: drop-shadow(0 0 8px rgba(255,255,255,0.3));
+           }
+           75% {
+               transform: translateY(10px) rotate(-5deg) scale(0.9);
+               filter: drop-shadow(0 0 6px rgba(255,255,255,0.2));
+           }
+           100% {
+               transform: translateY(0) rotate(0deg) scale(1);
+               filter: drop-shadow(0 0 8px rgba(255,255,255,0.3));
+           }
+       }
+
+       .wings {
+           animation: wing-flutter 0.8s infinite ease-in-out;
+       }
+
+       @keyframes wing-flutter {
+           0%, 100% { transform: scaleX(1); }
+           50% { transform: scaleX(0.85); }
+       }
+
+       .dust-particle {
+           position: absolute;
+           width: 2px;
+           height: 2px;
+           background: white;
+           border-radius: 50%;
+           pointer-events: none;
+           opacity: 0;
+       }
+
+       @keyframes sparkle {
+           0% {
+               transform: translateY(0) scale(0);
+               opacity: 0;
+           }
+           50% {
+               opacity: 1;
+           }
+           100% {
+               transform: translateY(-20px) scale(0);
+               opacity: 0;
+           }
+       }
+
+       .loading-text {
+           position: absolute;
+           width: 100%;
+           text-align: center;
+           color: white;
+           font-family: serif;
+           font-size: 1.2em;
+           letter-spacing: 2px;
+           margin-top: 120px;
+           animation: glow 1.5s ease-in-out infinite alternate;
+       }
+
+       @keyframes glow {
+           from {
+               text-shadow: 0 0 5px rgba(255,255,255,0.8),
+                          0 0 10px rgba(255,255,255,0.8),
+                          0 0 15px rgba(255,255,255,0.8);
+           }
+           to {
+               text-shadow: 0 0 10px rgba(255,255,255,0.9),
+                          0 0 20px rgba(255,255,255,0.9),
+                          0 0 30px rgba(255,255,255,0.9);
+           }
+       }
+   </style>
+</head>
+<body>
+   <div class="loader-container">
+       <div class="loading-text">Still in progress</div>
+       <a href="index.html" class="butterfly-link">
+           <div class="butterfly">
+               <svg viewBox="0 0 100 100" class="wings">
+                   <path d="M48 40 L52 40 L52 60 L48 60 Z" fill="white"/>
+                   <path d="M48 40 Q45 30 42 25 M52 40 Q55 30 58 25" stroke="white" stroke-width="1" fill="none"/>
+                   <path d="M48 40 C20 20, 10 30, 20 45 C10 60, 20 65, 48 50" fill="white" opacity="0.9"/>
+                   <path d="M52 40 C80 20, 90 30, 80 45 C90 60, 80 65, 52 50" fill="white" opacity="0.9"/>
+                   <path d="M48 50 C20 45, 10 55, 20 65 C10 75, 30 75, 48 60" fill="white" opacity="0.8"/>
+                   <path d="M52 50 C80 45, 90 55, 80 65 C90 75, 70 75, 52 60" fill="white" opacity="0.8"/>
+               </svg>
+           </div>
+       </a>
+   </div>
+
+   <script>
+       document.addEventListener('DOMContentLoaded', () => {
+           const container = document.querySelector('.loader-container');
+           
+           function createSparkle() {
+               const particle = document.createElement('div');
+               particle.className = 'dust-particle';
+               
+               const angle = Math.random() * Math.PI * 2;
+               const distance = 20 + Math.random() * 30;
+               const x = Math.cos(angle) * distance;
+               const y = Math.sin(angle) * distance;
+               
+               particle.style.left = `${50 + x}px`;
+               particle.style.top = `${50 + y}px`;
+               particle.style.animation = `sparkle ${0.5 + Math.random() * 1}s ease-out`;
+               
+               container.appendChild(particle);
+               
+               particle.addEventListener('animationend', () => {
+                   particle.remove();
+               });
+           }
+
+           setInterval(createSparkle, 100);
+       });
+   </script>
+</body>
+</html>
