@@ -69,8 +69,8 @@
         }
 
         .hourglass-container {
-            width: 400px;
-            height: 600px;
+            width: 300px;
+            height: 400px;
             position: relative;
             margin-bottom: 2rem;
         }
@@ -105,6 +105,7 @@
     </style>
 </head>
 <body>
+    <!-- Rest of the HTML remains the same -->
     <div class="container">
         <div class="hourglass-container">
             <svg class="hourglass" viewBox="0 0 300 450">
@@ -130,7 +131,7 @@
                 <path d="M90 45 L210 45 L180 225 L120 225 Z" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
                 <path d="M120 225 L180 225 L210 405 L90 405 Z" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
                 
-                <!-- Falling sand particles (behind everything) -->
+                <!-- Falling sand particles -->
                 <g class="sand-stream">
                     <g class="particles">
                         <circle class="sand-particle" cx="150" cy="52" r="0.8">
@@ -166,7 +167,7 @@
                 <path d="M90 45 L105 45 L97 52" fill="rgba(255,255,255,0.2)"/>
                 <path d="M195 45 L210 45 L203 52" fill="rgba(255,255,255,0.2)"/>
                 
-                <!-- Wooden bases (now at the end to be on top) -->
+                <!-- Wooden bases -->
                 <path d="M60 15 C60 8 240 8 240 15 L232 45 C232 52 68 52 68 45 Z" fill="#8B4513"/>
                 <ellipse cx="150" cy="15" rx="90" ry="7" fill="#A0522D"/>
                 <path d="M60 405 C60 398 240 398 240 405 L232 435 C232 442 68 442 68 435 Z" fill="#8B4513"/>
