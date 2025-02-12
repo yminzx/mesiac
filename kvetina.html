@@ -29,17 +29,41 @@
 
         .message {
             position: absolute;
-            top: 15%;
             width: 100%;
+            padding: 0 20px;
             color: #f5f5f0;
-            font-size: clamp(1.5rem, 5vw, 2rem);
+            font-size: clamp(1.2rem, 4vw, 1.8rem);
             text-align: center;
             text-shadow: 0 0 10px rgba(255,255,255,0.5),
-                         0 0 20px rgba(255,255,255,0.3),
-                         0 0 30px rgba(255,255,255,0.2);
+                        0 0 20px rgba(255,255,255,0.3),
+                        0 0 30px rgba(255,255,255,0.2);
             opacity: 0;
             pointer-events: none;
             transition: opacity 2s ease-out;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            top: 20%; 
+        }
+
+        .emoji {
+            width: clamp(24px, 6vw, 32px);
+            height: clamp(24px, 6vw, 32px);
+            vertical-align: middle;
+            display: inline-block;
+        }
+
+        .message-2 {
+            top: 30%;
+        }
+
+        .message-3 {
+            top: 40%;
+        }
+
+        .message-4 {
+            top: 50%;
         }
 
         .glow {
@@ -102,6 +126,11 @@
             opacity: 0;
             transform: translateY(-50px);
             pointer-events: none;
+        }
+
+        .message.show {
+            opacity: 1;
+            animation: messageGlow 2s ease-in-out infinite;
         }
 
         .next-glow {
@@ -171,52 +200,76 @@
         }
 
         .butterfly {
-    position: absolute;
-    width: 40px;
-    height: 40px;
-    filter: drop-shadow(0 0 8px rgba(255,255,255,0.3));
-    opacity: 0;
-    pointer-events: none;
-}
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            filter: drop-shadow(0 0 8px rgba(255,255,255,0.3));
+            opacity: 0;
+            pointer-events: none;
+        }
 
-            .butterfly svg {
-                animation: wing-flutter 0.8s infinite ease-in-out;
-            }
+        .butterfly svg {
+            animation: wing-flutter 0.8s infinite ease-in-out;
+        }
 
-            @keyframes wing-flutter {
-                0%, 100% { transform: scaleX(1); }
-                50% { transform: scaleX(0.85); }
-            }
+        .final-image-container {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translate(-50%, 100%);
+            opacity: 0;
+            transition: all 1.5s ease-out;
+            z-index: 2;
+        }
 
-            @keyframes flyUp {
-                0% {
-                    transform: translateY(100vh) translateX(0) scale(1);
-                    opacity: 0;
-                }
-                10% {
-                    opacity: 1;
-                }
-                25% {
-                    transform: translateY(75vh) translateX(20px);
-                }
-                50% {
-                    transform: translateY(50vh) translateX(-20px);
-                }
-                75% {
-                    transform: translateY(25vh) translateX(20px);
-                }
-                90% {
-                    opacity: 1;
-                }
-                100% {
-                    transform: translateY(-20vh) translateX(0);
-                    opacity: 0;
-                }
-            }
+        .final-image-container.show {
+            transform: translate(-50%, 0);
+            opacity: 1;
+        }
 
-            .butterfly.animated {
-                animation: flyUp 8s ease-in-out forwards;
+        .final-image {
+            max-width: 300px;
+            height: auto;
+            filter: drop-shadow(0 0 20px rgba(255,255,255,0.3));
+        }
+
+        /* Keyframes Animations */
+        @keyframes messageGlow {
+            0% { text-shadow: 0 0 10px rgba(255,255,255,0.5); }
+            50% { text-shadow: 0 0 20px rgba(255,255,255,0.8); }
+            100% { text-shadow: 0 0 10px rgba(255,255,255,0.5); }
+        }
+
+        @keyframes wing-flutter {
+            0%, 100% { transform: scaleX(1); }
+            50% { transform: scaleX(0.85); }
+        }
+
+        @keyframes flyUp {
+            0% {
+                transform: translateY(100vh) translateX(0) scale(1);
+                opacity: 0;
             }
+            10% {
+                opacity: 1;
+            }
+            25% {
+                transform: translateY(75vh) translateX(20px);
+            }
+            50% {
+                transform: translateY(50vh) translateX(-20px);
+            }
+            75% {
+                transform: translateY(25vh) translateX(20px);
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-20vh) translateX(0);
+                opacity: 0;
+            }
+        }
 
         @keyframes scale {
             0% { transform: translate(-50%, -50%) scale(1); }
@@ -261,11 +314,44 @@
                 transform: rotate(var(--rotation)) scale(1);
             }
         }
+
+        .butterfly.animated {
+            animation: flyUp 8s ease-in-out forwards;
+        }
+
+        .side-image {
+            --left-angle: -15deg;  
+            --right-angle: 15deg; 
+            position: absolute;
+            bottom: 0;
+            max-width: 200px;
+            opacity: 0;
+            transition: opacity 0.5s ease-out;
+            filter: drop-shadow(0 0 15px rgba(255,255,255,0.2));
+        }
+
+        .side-image.left {
+            right: calc(60%);
+            transform: rotate(var(--left-angle));
+        }
+
+        .side-image.right {
+            left: calc(60%);
+            transform: rotate(var(--right-angle));
+            max-width: 250px;
+        }
+
+        .side-image.show {
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="message">✧ Our memories ✧</div>
+        <div class="message message-2" id="daysSince">✧ November 19, 2024: 0 <img src="img/kvetina/MochiCatShy.gif" alt="hourglass" class="emoji"> ✧</div>
+        <div class="message message-3" id="daysUntil">✧ July 28, 2025: 0 <img src="img/kvetina/MochiCatShy.gif" alt="moon" class="emoji"> ✧</div>
+        <div class="message message-4">✧ Until the end <img src="img/kvetina/butterflyemote.png" alt="heart" class="emoji"> ✧</div>
         <div class="glow"></div>
         <div class="carousel-container">
             <div class="next-glow"></div>
@@ -349,159 +435,242 @@
             </div>
         </div>
     </div>
+    <script>
+document.addEventListener('DOMContentLoaded', () => {
+    const container = document.querySelector('.container');
+    const glow = document.querySelector('.glow');
+    const carouselContainer = document.querySelector('.carousel-container');
+    const carousel = document.querySelector('.carousel');
+    
+    // Function to calculate days between dates
+    function calculateDays(date1, date2) {
+        const oneDay = 24 * 60 * 60 * 1000;
+        const firstDate = new Date(date1);
+        const secondDate = new Date(date2);
+        return Math.round(Math.abs((firstDate - secondDate) / oneDay));
+    }
 
-    <script>document.addEventListener('DOMContentLoaded', () => {
-        const container = document.querySelector('.container');
-        const glow = document.querySelector('.glow');
-        const carouselContainer = document.querySelector('.carousel-container');
-        const carousel = document.querySelector('.carousel');
-        
-        function createWave(element) {
-            const wave = document.createElement('div');
-            wave.className = 'wave';
-            const rect = element.getBoundingClientRect();
-            const containerRect = container.getBoundingClientRect();
-            wave.style.top = `${rect.top - containerRect.top + rect.height/2}px`;
-            wave.style.left = `${rect.left - containerRect.left + rect.width/2}px`;
-            wave.style.animation = 'wave 2s ease-out forwards';
-            container.appendChild(wave);
-            setTimeout(() => wave.remove(), 2000);
+    // Update the day counters
+    const startDate = new Date('2024-11-19');
+    const endDate = new Date('2025-07-28');
+    const today = new Date();
+
+    const daysSinceElement = document.getElementById('daysSince');
+    const daysUntilElement = document.getElementById('daysUntil');
+
+    const daysSince = calculateDays(today, startDate);
+    const daysUntil = calculateDays(today, endDate);
+
+    daysSinceElement.innerHTML = `✧ November 19, 2024: ${daysSince} <img src="img/kvetina/MochiCatShy.gif" alt="hourglass" class="emoji"> ✧`;
+    daysUntilElement.innerHTML = `✧ July 28, 2025: ${daysUntil} <img src="img/kvetina/MochiCatShy.gif" alt="moon" class="emoji"> ✧`;
+
+    function createWave(element) {
+        const wave = document.createElement('div');
+        wave.className = 'wave';
+        const rect = element.getBoundingClientRect();
+        const containerRect = container.getBoundingClientRect();
+        wave.style.top = `${rect.top - containerRect.top + rect.height/2}px`;
+        wave.style.left = `${rect.left - containerRect.left + rect.width/2}px`;
+        wave.style.animation = 'wave 2s ease-out forwards';
+        container.appendChild(wave);
+        setTimeout(() => wave.remove(), 2000);
+    }
+
+    glow.addEventListener('click', () => {
+        createWave(glow);
+        carouselContainer.classList.add('show');
+        for(let i = 1; i < 3; i++) {
+            setTimeout(() => createWave(glow), i * 400);
         }
-    
-        glow.addEventListener('click', () => {
-            createWave(glow);
-            carouselContainer.classList.add('show');
-            for(let i = 1; i < 3; i++) {
-                setTimeout(() => createWave(glow), i * 400);
-            }
-            setTimeout(() => {
-                glow.style.opacity = '0';
-                setTimeout(() => glow.remove(), 1000);
-            }, 1000);
-        });
-    
-        // Dust particles
-        for (let i = 0; i < 150; i++) {
-            const particle = document.createElement('div');
-            particle.className = 'dust-particle';
-            particle.style.left = `${Math.random() * 100}%`;
-            particle.style.width = `${Math.random() * 3 + 1}px`;
-            particle.style.height = particle.style.width;
-            particle.style.animation = `rise ${5 + Math.random() * 3}s ease-out infinite ${Math.random() * 4}s`;
-            container.appendChild(particle);
-        }
-    
-        // Carousel drag functionality
-        let isDragging = false;
-        let startPos = 0;
-        let currentTranslate = 0;
-        let prevTranslate = 0;
-    
-        carousel.addEventListener('mousedown', dragStart);
-        carousel.addEventListener('touchstart', dragStart);
-        carousel.addEventListener('mouseup', dragEnd);
-        carousel.addEventListener('touchend', dragEnd);
-        carousel.addEventListener('mousemove', drag);
-        carousel.addEventListener('touchmove', drag);
-        carousel.addEventListener('mouseleave', dragEnd);
-    
-        function dragStart(e) {
-            isDragging = true;
-            carousel.classList.add('grabbing');
-            startPos = getPositionX(e);
-            prevTranslate = currentTranslate;
-        }
-    
-        function drag(e) {
-            if (isDragging) {
-                const currentPosition = getPositionX(e);
-                currentTranslate = prevTranslate + currentPosition - startPos;
-                setSliderPosition();
-            }
-        }
-    
-        function dragEnd() {
-            isDragging = false;
-            carousel.classList.remove('grabbing');
-            const maxTranslate = -(carousel.scrollWidth - carousel.offsetWidth);
-            if (currentTranslate > 0) {
-                currentTranslate = 0;
-            } else if (currentTranslate < maxTranslate) {
-                currentTranslate = maxTranslate;
-                showNextGlow();
-            }
+        setTimeout(() => {
+            glow.style.opacity = '0';
+            setTimeout(() => glow.remove(), 1000);
+        }, 1000);
+    });
+
+    // Create dust particles effect
+    for (let i = 0; i < 150; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'dust-particle';
+        particle.style.left = `${Math.random() * 100}%`;
+        particle.style.width = `${Math.random() * 3 + 1}px`;
+        particle.style.height = particle.style.width;
+        particle.style.animation = `rise ${5 + Math.random() * 3}s ease-out infinite ${Math.random() * 4}s`;
+        container.appendChild(particle);
+    }
+
+    // Carousel drag functionality
+    let isDragging = false;
+    let startPos = 0;
+    let currentTranslate = 0;
+    let prevTranslate = 0;
+
+    carousel.addEventListener('mousedown', dragStart);
+    carousel.addEventListener('touchstart', dragStart);
+    carousel.addEventListener('mouseup', dragEnd);
+    carousel.addEventListener('touchend', dragEnd);
+    carousel.addEventListener('mousemove', drag);
+    carousel.addEventListener('touchmove', drag);
+    carousel.addEventListener('mouseleave', dragEnd);
+
+    function dragStart(e) {
+        isDragging = true;
+        carousel.classList.add('grabbing');
+        startPos = getPositionX(e);
+        prevTranslate = currentTranslate;
+    }
+
+    function drag(e) {
+        if (isDragging) {
+            const currentPosition = getPositionX(e);
+            currentTranslate = prevTranslate + currentPosition - startPos;
             setSliderPosition();
         }
-    
-        function getPositionX(e) {
-            return e.type.includes('mouse') ? e.pageX : e.touches[0].clientX;
+    }
+
+    function dragEnd() {
+        isDragging = false;
+        carousel.classList.remove('grabbing');
+        const maxTranslate = -(carousel.scrollWidth - carousel.offsetWidth);
+        if (currentTranslate > 0) {
+            currentTranslate = 0;
+        } else if (currentTranslate < maxTranslate) {
+            currentTranslate = maxTranslate;
+            showNextGlow();
         }
-    
-        function setSliderPosition() {
-            carousel.style.transform = `translateX(${currentTranslate}px)`;
+        setSliderPosition();
+    }
+
+    function getPositionX(e) {
+        return e.type.includes('mouse') ? e.pageX : e.touches[0].clientX;
+    }
+
+    function setSliderPosition() {
+        carousel.style.transform = `translateX(${currentTranslate}px)`;
+    }
+
+    const nextGlow = document.querySelector('.next-glow');
+    let nextGlowShown = false;
+
+    function showNextGlow() {
+        if (!nextGlowShown) {
+            nextGlowShown = true;
+            nextGlow.classList.add('show');
         }
-    
-        const nextGlow = document.querySelector('.next-glow');
-        let nextGlowShown = false;
-    
-        function showNextGlow() {
-            if (!nextGlowShown) {
-                nextGlowShown = true;
-                nextGlow.classList.add('show');
-            }
+    }
+
+    nextGlow.addEventListener('click', () => {
+        createWave(nextGlow);
+        carouselContainer.classList.add('hide');
+        for(let i = 1; i < 3; i++) {
+            setTimeout(() => createWave(nextGlow), i * 400);
         }
-    
-        nextGlow.addEventListener('click', () => {
-            createWave(nextGlow);
-            carouselContainer.classList.add('hide');
-            for(let i = 1; i < 3; i++) {
-                setTimeout(() => createWave(nextGlow), i * 400);
-            }
+        
+        // Create butterflies animation
+        for(let i = 0; i < 20; i++) {
+            const butterfly = document.createElement('div');
+            butterfly.className = 'butterfly';
+            butterfly.innerHTML = `
+                <svg viewBox="0 0 100 100">
+                    <path d="M48 40 L52 40 L52 60 L48 60 Z" fill="white"/>
+                    <path d="M48 40 Q45 30 42 25 M52 40 Q55 30 58 25" stroke="white" stroke-width="1" fill="none"/>
+                    <path d="M48 40 C20 20, 10 30, 20 45 C10 60, 20 65, 48 50" fill="white" opacity="0.9"/>
+                    <path d="M52 40 C80 20, 90 30, 80 45 C90 60, 80 65, 52 50" fill="white" opacity="0.9"/>
+                    <path d="M48 50 C20 45, 10 55, 20 65 C10 75, 30 75, 48 60" fill="white" opacity="0.8"/>
+                    <path d="M52 50 C80 45, 90 55, 80 65 C90 75, 70 75, 52 60" fill="white" opacity="0.8"/>
+                </svg>
+            `;
+            const section = (i % 5) * 20;
+            const randomOffset = Math.random() * 15;
+            butterfly.style.left = `${section + randomOffset}%`;
             
-                for(let i = 0; i < 20; i++) {
-                    const butterfly = document.createElement('div');
-                    butterfly.className = 'butterfly';
-                    butterfly.innerHTML = `
-                        <svg viewBox="0 0 100 100">
-                            <path d="M48 40 L52 40 L52 60 L48 60 Z" fill="white"/>
-                            <path d="M48 40 Q45 30 42 25 M52 40 Q55 30 58 25" stroke="white" stroke-width="1" fill="none"/>
-                            <path d="M48 40 C20 20, 10 30, 20 45 C10 60, 20 65, 48 50" fill="white" opacity="0.9"/>
-                            <path d="M52 40 C80 20, 90 30, 80 45 C90 60, 80 65, 52 50" fill="white" opacity="0.9"/>
-                            <path d="M48 50 C20 45, 10 55, 20 65 C10 75, 30 75, 48 60" fill="white" opacity="0.8"/>
-                            <path d="M52 50 C80 45, 90 55, 80 65 C90 75, 70 75, 52 60" fill="white" opacity="0.8"/>
-                        </svg>
-                    `;
-                    const section = (i % 5) * 20; 
-                    const randomOffset = Math.random() * 15; 
-                    butterfly.style.left = `${section + randomOffset}%`;
-                    
-                   
-                    const baseDelay = i * 400; 
-                    const randomDelay = Math.random() * 1000; 
-                    setTimeout(() => {
-                        container.appendChild(butterfly);
-                        butterfly.classList.add('animated');
-                        setTimeout(() => butterfly.remove(), 8000);
-                    }, baseDelay + randomDelay);
-                }
-                    
+            const baseDelay = i * 400;
+            const randomDelay = Math.random() * 1000;
             setTimeout(() => {
-                nextGlow.style.opacity = '0';
-                setTimeout(() => {
-                    nextGlow.remove();
-                    const message = document.querySelector('.message');
-                    message.style.opacity = '1';
-                }, 1000);
-            }, 1000);
-        });
-    
-        // Prevent context menu on long press
-        window.oncontextmenu = function(event) {
-            event.preventDefault();
-            event.stopPropagation();
-            return false;
-        };
+                container.appendChild(butterfly);
+                butterfly.classList.add('animated');
+                
+                setTimeout(() => butterfly.remove(), 8000);
+
+                if (i === 19) {
+                    setTimeout(() => {
+                        // Create final image container and images dynamically
+                        const finalImageContainer = document.createElement('div');
+                        finalImageContainer.className = 'final-image-container';
+                        
+
+                        const leftLink = document.createElement('a');
+                        leftLink.href = 'home.html';
+                        leftLink.style.display = 'contents';
+
+                        const leftImage = document.createElement('img');
+                        leftImage.className = 'side-image left';
+                        leftImage.src = 'img/kvetina/minizubg.png';
+                        leftImage.alt = 'Left Side Image';
+                        leftImage.style.setProperty('--left-angle', '-15deg');
+                        leftImage.style.cursor = 'pointer';
+
+                        leftLink.appendChild(leftImage);
+                        finalImageContainer.appendChild(leftLink);
+                        
+                        const finalImage = document.createElement('img');
+                        finalImage.className = 'final-image';
+                        finalImage.src = 'img/kvetina/moonflower.png';  
+                        finalImage.alt = 'Moon Flower';
+                        
+                        const rightImage = document.createElement('img');
+                        rightImage.className = 'side-image right';
+                        rightImage.src = 'img/kvetina/miniminbg.png';  
+                        rightImage.alt = 'Right Side Image';
+                        rightImage.style.setProperty('--right-angle', '15deg');
+                        
+                        finalImageContainer.appendChild(leftLink);
+                        finalImageContainer.appendChild(finalImage);
+                        finalImageContainer.appendChild(rightImage);
+                        
+                        container.appendChild(finalImageContainer);
+                        
+                        let imagesShown = false;
+                        finalImage.addEventListener('click', () => {
+                            if (!imagesShown) {
+                                leftImage.classList.add('show');
+                                rightImage.classList.add('show');
+                                imagesShown = true;
+                            } else {
+                                leftImage.classList.remove('show');
+                                rightImage.classList.remove('show');
+                                imagesShown = false;
+                            }
+                        });
+
+                        setTimeout(() => {
+                            finalImageContainer.classList.add('show');
+                            
+                            setTimeout(() => {
+                                const messages = document.querySelectorAll('.message');
+                                messages.forEach(message => {
+                                    message.style.opacity = '1';
+                                });
+                            }, 1000);
+                        }, 500);
+                    }, 8500);
+                }
+            }, baseDelay + randomDelay);
+        }
+        
+        setTimeout(() => {
+            nextGlow.style.opacity = '0';
+            setTimeout(() => nextGlow.remove(), 1000);
+        }, 1000);
     });
+
+    // Prevent context menu on long press
+    window.oncontextmenu = function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        return false;
+    };
+});
     </script>
 </body>
 </html>

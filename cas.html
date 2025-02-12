@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌑- Mesiac </title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #0e0e0e;
+            overflow: hidden;
+            height: 100vh;
+            font-family: serif;
+        }
+
+        .container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .dust-particle {
+            position: fixed;
+            width: 1px;
+            height: 1px;
+            border-radius: 50%;
+            background: radial-gradient(circle at center, rgba(255,255,255,0.8), rgba(255,255,255,0.2));
+            opacity: 0;
+        }
+
+        @keyframes rise {
+            0% {
+                transform: translateY(100vh);
+                opacity: 0;
+            }
+            20% {
+                opacity: 1;
+            }
+            80% {
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(-20vh);
+                opacity: 0;
+            }
+        }
+
+        .countdown-container {
+            text-align: center;
+            color: #f5f5f0;
+            margin-top: 2rem;
+            z-index: 2;
+        }
+
+        .countdown {
+            font-size: 1.5rem;
+            margin: 1rem 0;
+            text-shadow: 0 0 10px rgba(255,255,255,0.5);
+        }
+
+        .hourglass-container {
+            width: 400px;
+            height: 600px;
+            position: relative;
+            margin-bottom: 2rem;
+        }
+
+        .hourglass {
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(0 0 15px rgba(255,255,255,0.2));
+        }
+
+        .sand-top {
+            fill: url(#sandGradient);
+            transform-origin: top;
+            opacity: 0.9;
+        }
+
+        .sand-bottom {
+            fill: url(#sandGradient);
+            transform-origin: bottom;
+            opacity: 0.9;
+        }
+
+        .sand-particle {
+            fill: #d4b483;
+            opacity: 0;
+        }
+
+        .sand-particle {
+            fill: url(#sandGradient);
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hourglass-container">
+            <svg class="hourglass" viewBox="0 0 300 450">
+                <defs>
+                    <!-- Sand gradient pattern -->
+                    <linearGradient id="sandGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#e6c795"/>
+                        <stop offset="25%" style="stop-color:#d4b483"/>
+                        <stop offset="50%" style="stop-color:#c19a6b"/>
+                        <stop offset="75%" style="stop-color:#d4b483"/>
+                        <stop offset="100%" style="stop-color:#e6c795"/>
+                    </linearGradient>
+                    
+                    <!-- Sand stream pattern -->
+                    <pattern id="sandPattern" width="10" height="10" patternUnits="userSpaceOnUse">
+                        <circle cx="5" cy="5" r="1" fill="#d4b483" opacity="0.5"/>
+                        <circle cx="2" cy="2" r="0.8" fill="#c19a6b" opacity="0.3"/>
+                        <circle cx="8" cy="8" r="0.6" fill="#e6c795" opacity="0.4"/>
+                    </pattern>
+                </defs>
+
+                <!-- Glass body -->
+                <path d="M90 45 L210 45 L180 225 L120 225 Z" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+                <path d="M120 225 L180 225 L210 405 L90 405 Z" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+                
+                <!-- Falling sand particles (behind everything) -->
+                <g class="sand-stream">
+                    <g class="particles">
+                        <circle class="sand-particle" cx="150" cy="52" r="0.8">
+                            <animate attributeName="cy" from="52" to="398" dur="1.2s" repeatCount="indefinite" begin="0s"/>
+                            <animate attributeName="opacity" values="0.8;0.8;0" dur="1.2s" repeatCount="indefinite"/>
+                        </circle>
+                        <circle class="sand-particle" cx="152" cy="52" r="0.7">
+                            <animate attributeName="cy" from="52" to="398" dur="1.3s" repeatCount="indefinite" begin="0.2s"/>
+                            <animate attributeName="opacity" values="0.8;0.8;0" dur="1.3s" repeatCount="indefinite"/>
+                        </circle>
+                        <circle class="sand-particle" cx="148" cy="52" r="0.9">
+                            <animate attributeName="cy" from="52" to="398" dur="1.4s" repeatCount="indefinite" begin="0.4s"/>
+                            <animate attributeName="opacity" values="0.8;0.8;0" dur="1.4s" repeatCount="indefinite"/>
+                        </circle>
+                        <circle class="sand-particle" cx="151" cy="52" r="0.6">
+                            <animate attributeName="cy" from="52" to="398" dur="1.5s" repeatCount="indefinite" begin="0.1s"/>
+                            <animate attributeName="opacity" values="0.8;0.8;0" dur="1.5s" repeatCount="indefinite"/>
+                        </circle>
+                        <circle class="sand-particle" cx="149" cy="52" r="0.8">
+                            <animate attributeName="cy" from="52" to="398" dur="1.3s" repeatCount="indefinite" begin="0.3s"/>
+                            <animate attributeName="opacity" values="0.8;0.8;0" dur="1.3s" repeatCount="indefinite"/>
+                        </circle>
+                    </g>
+                </g>
+
+                <!-- Sand layers -->
+                <g class="sand-layers">
+                    <path class="sand-top" d="M97 52 L203 52 L175 220 L125 220 Z"/>
+                    <path class="sand-bottom" d="M125 230 L175 230 L203 398 L97 398 Z"/>
+                </g>
+
+                <!-- Glass highlights -->
+                <path d="M90 45 L105 45 L97 52" fill="rgba(255,255,255,0.2)"/>
+                <path d="M195 45 L210 45 L203 52" fill="rgba(255,255,255,0.2)"/>
+                
+                <!-- Wooden bases (now at the end to be on top) -->
+                <path d="M60 15 C60 8 240 8 240 15 L232 45 C232 52 68 52 68 45 Z" fill="#8B4513"/>
+                <ellipse cx="150" cy="15" rx="90" ry="7" fill="#A0522D"/>
+                <path d="M60 405 C60 398 240 398 240 405 L232 435 C232 442 68 442 68 435 Z" fill="#8B4513"/>
+                <ellipse cx="150" cy="435" rx="90" ry="7" fill="#A0522D"/>
+            </svg>
+        </div>
+
+        <div class="countdown-container">
+            <div class="countdown">
+                ♡ July 28, 2025: <span id="end-countdown"></span> ♡
+            </div>
+            <div class="countdown">
+                ✧ November 19, 2024: <span id="since-date-countdown"></span> ✧
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = document.querySelector('.container');
+
+            const hourglassContainer = document.querySelector('.hourglass-container');
+            hourglassContainer.addEventListener('click', () => {
+                window.location.href = 'home.html';
+            });
+            
+            // Create dust particles
+            for (let i = 0; i < 150; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'dust-particle';
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.width = `${Math.random() * 3 + 1}px`;
+                particle.style.height = particle.style.width;
+                particle.style.animation = `rise ${5 + Math.random() * 3}s ease-out infinite ${Math.random() * 4}s`;
+                container.appendChild(particle);
+            }
+
+            function formatTime(days, hours, minutes) {
+                return `${days} days, ${hours} hours, ${minutes} minutes`;
+            }
+
+            function updateCountdowns() {
+                const now = new Date();
+                const endDate = new Date('2025-07-28T23:59:59');
+                const startDate = new Date('2024-11-18T00:00:00');
+
+                // Calculate remaining time
+                const totalMillisecondsUntilEnd = endDate - now;
+                const daysUntilEnd = Math.floor(totalMillisecondsUntilEnd / (1000 * 60 * 60 * 24));
+                const hoursUntilEnd = Math.floor((totalMillisecondsUntilEnd % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutesUntilEnd = Math.floor((totalMillisecondsUntilEnd % (1000 * 60 * 60)) / (1000 * 60));
+
+                // Calculate elapsed time
+                const totalMillisecondsSince = now - startDate;
+                const daysSince = Math.floor(totalMillisecondsSince / (1000 * 60 * 60 * 24));
+                const hoursSince = Math.floor((totalMillisecondsSince % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutesSince = Math.floor((totalMillisecondsSince % (1000 * 60 * 60)) / (1000 * 60));
+
+                // Update displays
+                document.getElementById('end-countdown').textContent = formatTime(daysUntilEnd, hoursUntilEnd, minutesUntilEnd);
+                document.getElementById('since-date-countdown').textContent = formatTime(daysSince, hoursSince, minutesSince);
+
+                // Calculate progress percentage
+                const totalDuration = endDate - startDate;
+                const progress = totalMillisecondsSince / totalDuration;
+                
+                // Update sand animation
+                const sandTop = document.querySelector('.sand-top');
+                const sandBottom = document.querySelector('.sand-bottom');
+                
+                if (sandTop && sandBottom) {
+                    sandTop.style.transform = `scaleY(${1 - progress})`;
+                    sandBottom.style.transform = `scaleY(${progress})`;
+                }
+            }
+
+            // Initial update
+            updateCountdowns();
+            
+            // Update every minute
+            setInterval(updateCountdowns, 60000);
+        });
+    </script>
+</body>
+</html>
