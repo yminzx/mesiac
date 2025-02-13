@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>🌑- Mesiac </title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
@@ -271,32 +271,44 @@
                 grid-template-columns: repeat(4, 1fr);
             }
         }
-                /* Carousel */
+        
+        /* Carousel */
         .carousel-container {
             position: relative;
             width: 100%;
             height: 100%;
             overflow: hidden;
+            -webkit-transform: translateZ(0);
+            transform: translateZ(0);
         }
-
+        
         .carousel-slides {
-            display: flex;
+            position: relative;
             width: 100%;
             height: 100%;
-            transition: transform 0.5s ease-in-out;
         }
-
+        
         .carousel-slide {
-            min-width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
             height: 100%;
+            will-change: transform;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
         }
-
+        
         .carousel-slide img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            -webkit-transform: translateZ(0);
+            transform: translateZ(0);
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
         }
-
+        
         .carousel-nav {
             position: absolute;
             bottom: 1rem;
@@ -306,7 +318,7 @@
             gap: 0.5rem;
             z-index: 2;
         }
-
+        
         .carousel-dot {
             width: 8px;
             height: 8px;
@@ -314,11 +326,11 @@
             background: rgba(255, 255, 255, 0.5);
             cursor: pointer;
         }
-
+        
         .carousel-dot.active {
             background: white;
         }
-
+        
         .carousel-button {
             position: absolute;
             top: 50%;
@@ -335,13 +347,33 @@
             color: white;
             z-index: 2;
         }
-
+        
         .carousel-prev {
             left: 1rem;
         }
-
+        
         .carousel-next {
             right: 1rem;
+        }
+        
+        @media screen and (max-width: 768px) {
+            .carousel-container {
+                contain: strict;
+            }
+            
+            .carousel-button {
+                width: 32px;
+                height: 32px;
+            }
+            
+            .carousel-dot {
+                width: 6px;
+                height: 6px;
+            }
+            
+            .carousel-nav {
+                bottom: 0.5rem;
+            }
         }
 
         
@@ -487,10 +519,10 @@
                         <img src="img/index/1screen.PNG" alt="Slide 1" />
                     </a>
                     <a href="loading.html?destination=hviezda.html" class="carousel-slide">
-                        <img src="img/index/4screen.PNG" alt="Slide 2" />
+                        <img src="img/index/3screen.PNG" alt="Slide 2" />
                     </a>
                     <a href="loading.html?destination=hviezda.html" class="carousel-slide">
-                        <img src="img/index/3screen.PNG" alt="Slide 3" />
+                        <img src="img/index/4screen.PNG" alt="Slide 3" />
                     </a>
                 </div>
                 <button class="carousel-button carousel-prev">
@@ -616,22 +648,42 @@
             constructor(element) {
                 this.container = element;
                 this.slides = element.querySelector('.carousel-slides');
-                this.slideElements = this.slides.querySelectorAll('.carousel-slide');
+                this.slideElements = Array.from(this.slides.querySelectorAll('.carousel-slide'));
                 this.currentIndex = 0;
                 this.totalSlides = this.slideElements.length;
-
-                // Point nav
+                this.isTransitioning = false;
+        
+                // Force initial positioning
+                this.slideElements.forEach((slide, index) => {
+                    slide.style.transform = `translateX(${index * 100}%)`;
+                    slide.style.position = 'absolute';
+                    slide.style.width = '100%';
+                    slide.style.height = '100%';
+                });
+        
+                // Navigation
                 this.navContainer = element.querySelector('.carousel-nav');
                 this.createNavDots();
-
-                // Nav Button
                 this.prevButton = element.querySelector('.carousel-prev');
                 this.nextButton = element.querySelector('.carousel-next');
-
+        
                 this.initListeners();
                 this.updateSlidePosition();
+        
+                // Preload images
+                this.preloadImages();
             }
-
+        
+            preloadImages() {
+                this.slideElements.forEach(slide => {
+                    const img = slide.querySelector('img');
+                    if (img) {
+                        const tempImg = new Image();
+                        tempImg.src = img.src;
+                    }
+                });
+            }
+        
             createNavDots() {
                 for (let i = 0; i < this.totalSlides; i++) {
                     const dot = document.createElement('div');
@@ -641,42 +693,59 @@
                     this.navContainer.appendChild(dot);
                 }
             }
-
+        
             initListeners() {
                 this.prevButton.addEventListener('click', () => this.previousSlide());
                 this.nextButton.addEventListener('click', () => this.nextSlide());
-
-                // Auto-play
                 setInterval(() => this.nextSlide(), 5000);
             }
-
+        
             updateSlidePosition() {
-                this.slides.style.transform = `translateX(-${this.currentIndex * 100}%)`;
-                
-                // Point nav
+                if (this.isTransitioning) return;
+                this.isTransitioning = true;
+        
+                this.slideElements.forEach((slide, index) => {
+                    requestAnimationFrame(() => {
+                        slide.style.transition = 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
+                        slide.style.transform = `translateX(${(index - this.currentIndex) * 100}%)`;
+                    });
+                });
+        
+                // Update dots
                 const dots = this.navContainer.querySelectorAll('.carousel-dot');
                 dots.forEach((dot, index) => {
                     dot.classList.toggle('active', index === this.currentIndex);
                 });
+        
+                // Reset transition flag
+                setTimeout(() => {
+                    this.isTransitioning = false;
+                }, 500);
             }
-
+        
             previousSlide() {
-                this.currentIndex = (this.currentIndex - 1 + this.totalSlides) % this.totalSlides;
-                this.updateSlidePosition();
+                if (!this.isTransitioning) {
+                    this.currentIndex = (this.currentIndex - 1 + this.totalSlides) % this.totalSlides;
+                    this.updateSlidePosition();
+                }
             }
-
+        
             nextSlide() {
-                this.currentIndex = (this.currentIndex + 1) % this.totalSlides;
-                this.updateSlidePosition();
+                if (!this.isTransitioning) {
+                    this.currentIndex = (this.currentIndex + 1) % this.totalSlides;
+                    this.updateSlidePosition();
+                }
             }
-
+        
             goToSlide(index) {
-                this.currentIndex = index;
-                this.updateSlidePosition();
+                if (!this.isTransitioning && index !== this.currentIndex) {
+                    this.currentIndex = index;
+                    this.updateSlidePosition();
+                }
             }
         }
-
-        // Init carousel
+        
+        // Initialization
         document.addEventListener('DOMContentLoaded', () => {
             const carouselElement = document.querySelector('.carousel-container');
             if (carouselElement) {
