@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🌑- Mesiac </title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
@@ -271,44 +271,32 @@
                 grid-template-columns: repeat(4, 1fr);
             }
         }
-        
-        /* Carousel */
+                /* Carousel */
         .carousel-container {
             position: relative;
             width: 100%;
             height: 100%;
             overflow: hidden;
-            -webkit-transform: translateZ(0);
-            transform: translateZ(0);
         }
-        
+
         .carousel-slides {
-            position: relative;
+            display: flex;
             width: 100%;
             height: 100%;
+            transition: transform 0.5s ease-in-out;
         }
-        
+
         .carousel-slide {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
+            min-width: 100%;
             height: 100%;
-            will-change: transform;
-            backface-visibility: hidden;
-            -webkit-backface-visibility: hidden;
         }
-        
+
         .carousel-slide img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            -webkit-transform: translateZ(0);
-            transform: translateZ(0);
-            backface-visibility: hidden;
-            -webkit-backface-visibility: hidden;
         }
-        
+
         .carousel-nav {
             position: absolute;
             bottom: 1rem;
@@ -318,7 +306,7 @@
             gap: 0.5rem;
             z-index: 2;
         }
-        
+
         .carousel-dot {
             width: 8px;
             height: 8px;
@@ -326,11 +314,11 @@
             background: rgba(255, 255, 255, 0.5);
             cursor: pointer;
         }
-        
+
         .carousel-dot.active {
             background: white;
         }
-        
+
         .carousel-button {
             position: absolute;
             top: 50%;
@@ -347,33 +335,13 @@
             color: white;
             z-index: 2;
         }
-        
+
         .carousel-prev {
             left: 1rem;
         }
-        
+
         .carousel-next {
             right: 1rem;
-        }
-        
-        @media screen and (max-width: 768px) {
-            .carousel-container {
-                contain: strict;
-            }
-            
-            .carousel-button {
-                width: 32px;
-                height: 32px;
-            }
-            
-            .carousel-dot {
-                width: 6px;
-                height: 6px;
-            }
-            
-            .carousel-nav {
-                bottom: 0.5rem;
-            }
         }
 
         
@@ -547,7 +515,9 @@
                     <h3>Min Zu 💞</h3>
                     <p style="color: #666">Nov 19, 2024 (Tue)</p>
                 </div>
-                <div class="count" id="dayCount"></div>
+                <a href="loading.html?destination=kvetina2.html" style="text-decoration: none; color: inherit; cursor: pointer;">
+                    <div class="count" id="dayCount"></div>
+                </a>
             </div>
         </div>
 
@@ -577,7 +547,6 @@
                 <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 11.18 21.91 10.39 21.74 9.63C20.77 11.01 19.1 11.9 17.23 11.9C14.4 11.9 12.1 9.61 12.1 6.77C12.1 4.9 13 3.23 14.37 2.26C13.61 2.09 12.82 2 12 2Z"/>
                 </svg>
-            </a>
             </a>
         </div>
     </div>
@@ -649,42 +618,22 @@
             constructor(element) {
                 this.container = element;
                 this.slides = element.querySelector('.carousel-slides');
-                this.slideElements = Array.from(this.slides.querySelectorAll('.carousel-slide'));
+                this.slideElements = this.slides.querySelectorAll('.carousel-slide');
                 this.currentIndex = 0;
                 this.totalSlides = this.slideElements.length;
-                this.isTransitioning = false;
-        
-                // Force initial positioning
-                this.slideElements.forEach((slide, index) => {
-                    slide.style.transform = `translateX(${index * 100}%)`;
-                    slide.style.position = 'absolute';
-                    slide.style.width = '100%';
-                    slide.style.height = '100%';
-                });
-        
-                // Navigation
+
+                // Point nav
                 this.navContainer = element.querySelector('.carousel-nav');
                 this.createNavDots();
+
+                // Nav Button
                 this.prevButton = element.querySelector('.carousel-prev');
                 this.nextButton = element.querySelector('.carousel-next');
-        
+
                 this.initListeners();
                 this.updateSlidePosition();
-        
-                // Preload images
-                this.preloadImages();
             }
-        
-            preloadImages() {
-                this.slideElements.forEach(slide => {
-                    const img = slide.querySelector('img');
-                    if (img) {
-                        const tempImg = new Image();
-                        tempImg.src = img.src;
-                    }
-                });
-            }
-        
+
             createNavDots() {
                 for (let i = 0; i < this.totalSlides; i++) {
                     const dot = document.createElement('div');
@@ -694,59 +643,42 @@
                     this.navContainer.appendChild(dot);
                 }
             }
-        
+
             initListeners() {
                 this.prevButton.addEventListener('click', () => this.previousSlide());
                 this.nextButton.addEventListener('click', () => this.nextSlide());
+
+                // Auto-play
                 setInterval(() => this.nextSlide(), 5000);
             }
-        
+
             updateSlidePosition() {
-                if (this.isTransitioning) return;
-                this.isTransitioning = true;
-        
-                this.slideElements.forEach((slide, index) => {
-                    requestAnimationFrame(() => {
-                        slide.style.transition = 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
-                        slide.style.transform = `translateX(${(index - this.currentIndex) * 100}%)`;
-                    });
-                });
-        
-                // Update dots
+                this.slides.style.transform = `translateX(-${this.currentIndex * 100}%)`;
+                
+                // Point nav
                 const dots = this.navContainer.querySelectorAll('.carousel-dot');
                 dots.forEach((dot, index) => {
                     dot.classList.toggle('active', index === this.currentIndex);
                 });
-        
-                // Reset transition flag
-                setTimeout(() => {
-                    this.isTransitioning = false;
-                }, 500);
             }
-        
+
             previousSlide() {
-                if (!this.isTransitioning) {
-                    this.currentIndex = (this.currentIndex - 1 + this.totalSlides) % this.totalSlides;
-                    this.updateSlidePosition();
-                }
+                this.currentIndex = (this.currentIndex - 1 + this.totalSlides) % this.totalSlides;
+                this.updateSlidePosition();
             }
-        
+
             nextSlide() {
-                if (!this.isTransitioning) {
-                    this.currentIndex = (this.currentIndex + 1) % this.totalSlides;
-                    this.updateSlidePosition();
-                }
+                this.currentIndex = (this.currentIndex + 1) % this.totalSlides;
+                this.updateSlidePosition();
             }
-        
+
             goToSlide(index) {
-                if (!this.isTransitioning && index !== this.currentIndex) {
-                    this.currentIndex = index;
-                    this.updateSlidePosition();
-                }
+                this.currentIndex = index;
+                this.updateSlidePosition();
             }
         }
-        
-        // Initialization
+
+        // Init carousel
         document.addEventListener('DOMContentLoaded', () => {
             const carouselElement = document.querySelector('.carousel-container');
             if (carouselElement) {
